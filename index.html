@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 할 일</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>📋 나의 할 일</h1>
+        </header>
+
+        <section class="progress-section">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="전체 진행률" id="progress-bar">
+                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+            <p class="progress-text" id="progress-text" aria-live="polite">0 / 0 완료 (0%)</p>
+        </section>
+
+        <section class="input-section">
+            <input type="text" id="todo-input" placeholder="할 일을 입력하세요" aria-label="할 일 입력">
+            <select id="category-select" aria-label="카테고리 선택">
+                <option value="auto">자동</option>
+                <option value="work">업무</option>
+                <option value="personal">개인</option>
+                <option value="study">공부</option>
+            </select>
+            <button type="button" id="add-button">추가</button>
+            <p class="auto-hint" id="auto-hint" aria-live="polite" hidden></p>
+        </section>
+
+        <section class="filter-section">
+            <button type="button" class="filter-button" data-filter="all">전체</button>
+            <button type="button" class="filter-button" data-filter="work">업무</button>
+            <button type="button" class="filter-button" data-filter="personal">개인</button>
+            <button type="button" class="filter-button" data-filter="study">공부</button>
+        </section>
+
+        <section class="list-section">
+            <ul id="todo-list"></ul>
+        </section>
+    </div>
+
+    <!-- 삭제 후 되돌리기 토스트: deleteTodo에서 텍스트/버튼이 채워지고 표시된다 -->
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-message" id="toast-message"></span>
+        <button type="button" class="toast-undo" id="toast-undo">되돌리기</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+</html>
