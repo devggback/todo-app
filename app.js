@@ -5,7 +5,8 @@
 const SUPABASE_URL = "https://zbhuxafbcmdtpwnzrlld.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpiaHV4YWZiY21kdHB3bnpybGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1MTUxODYsImV4cCI6MjA5NTA5MTE4Nn0.wswD4RK3obrXxu5-XLv5TkL8IJi6ddAXwk5Au4AzHY8";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const { createClient } = window.supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ---------- 상수 & 상태 ----------
 
@@ -109,7 +110,7 @@ function debounce(fn, wait) {
 // ---------- 데이터 계층 (Supabase) ----------
 
 async function loadTodos() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from("todo")
         .select("*")
         .order("created_at", { ascending: true });
@@ -121,7 +122,7 @@ async function loadTodos() {
 }
 
 async function addTodo(text, category) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from("todo")
         .insert({ text, category, completed: false })
         .select()
@@ -135,7 +136,7 @@ async function addTodo(text, category) {
 }
 
 async function updateTodo(id, newText, newCategory) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from("todo")
         .update({ text: newText, category: newCategory })
         .eq("id", id)
@@ -151,7 +152,7 @@ async function updateTodo(id, newText, newCategory) {
 }
 
 async function deleteTodo(id) {
-    const { error } = await supabase.from("todo").delete().eq("id", id);
+    const { error } = await supabaseClient.from("todo").delete().eq("id", id);
     if (error) {
         console.warn("todo delete failed:", error);
         return false;
@@ -164,7 +165,7 @@ async function deleteTodo(id) {
 async function toggleTodo(id) {
     const todo = todosState.find((t) => t.id === id);
     if (!todo) return null;
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from("todo")
         .update({ completed: !todo.completed })
         .eq("id", id)
@@ -345,7 +346,7 @@ function finalizePendingDeletion() {
     pendingDeletion = null;
     hideToast();
     // 실제 DB 삭제는 undo 시간이 지난 후에 실행
-    supabase.from("todo").delete().eq("id", todo.id).then(({ error }) => {
+    supabaseClient.from("todo").delete().eq("id", todo.id).then(({ error }) => {
         if (error) console.warn("todo delete failed:", error);
     });
 }
